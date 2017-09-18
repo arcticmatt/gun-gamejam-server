@@ -3,7 +3,9 @@ local entities = {
 }
 
 function entities:add(key, entity)
+  print('adding to map with key ', key)
   self.entityMap[key] = entity
+  print('val at key is now ', self.entityMap[key])
 end
 
 function entities:add_many(entities)
@@ -26,19 +28,15 @@ function entities:draw()
   end
 end
 
-function entities:update_upd(dt)
-  for k, e in pairs(self.entityMap) do
-    e:update(dt, k)
-  end
+function entities:update(ent_id, x, y, dt)
+  print('updating with ent_id = ', ent_id)
+  print('self.entityMap[ent_id] = ', self.entityMap[ent_id])
+  self.entityMap[ent_id]:update(x, y, dt)
 end
 
-function entities:update(ent_id, x, y)
-  self.entityMap[ent_id]:update(x, y)
-end
-
-function entities:send_info()
-  for _, e in pairs do
-    e:send_info()
+function entities:send_at_info()
+  for _, e in pairs(self.entityMap) do
+    e:send_at_info()
   end
 end
 

@@ -12,10 +12,7 @@ function Entity:init(x, y, w, h, udp, ip, port, id)
   self.udp = udp
   self.ip = ip
   self.port = port
-  if not id then
-    math.randomseed(os.time())
-    self.id = math.random(99999)
-  end
+  self.id = id
 end
 
 function Entity:getRect()
@@ -26,13 +23,20 @@ function Entity:draw()
   -- Do nothing by default
 end
 
-function Entity:update(x, y)
+function Entity:update(x, y, dt)
   self.x = x
   self.y = y
 end
 
-function Entity:send_info()
-  udp:sendto(string.format("%d %s %d %d", self.id, 'at', v.x, v.y), self.ip, self.port)
+function Entity:send_spawn_info()
+  print("Sending spawn info to ", self.ip, self.port, self.id, self.x, self.y)
+  self.udp:sendto(string.format("%d %s %d %d", self.id, 'spawn',
+    self.x, self.y), self.ip, self.port)
+end
+
+function Entity:send_at_info()
+  self.udp:sendto(string.format("%d %s %d %d", self.id, 'at',
+    self.x, self.y), self.ip, self.port)
 end
 
 -- TODO: tostring
