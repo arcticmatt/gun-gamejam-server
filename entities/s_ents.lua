@@ -42,13 +42,12 @@ function ents:send_move_info()
   end
 end
 
-function ents:serialize_ents()
-  local ret = {}
+function ents:serialize_updates()
+  local ret = {cmd="update", ents={}}
   for id, e in pairs(self.entMap) do
-    ret[id] = {x=e.x, y=e.y}
+    ret.ents[id] = {x=e.x, y=e.y}
   end
 
-  print(json.encode(ret))
   return json.encode(ret)
 end
 

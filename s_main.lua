@@ -4,20 +4,22 @@ local Player = require("entities.s_player")
 local udp = socket.udp()
 
 udp:settimeout(0)
-udp:setsockname('*', 12345)
+-- udp:setoption('broadcast', true)
+udp:setsockname('192.168.1.12', 12345)
+udp:setpeername('192.168.1.255', 12345)
 
--- replaced by ents
--- local world = {} -- the empty world-state
-local data, msg_or_ip, port_or_nil
-local cmd, params, dt, currenttime
-local previoustime = socket.gettime()
+local data, msg_or_ip, port_or_nil, cmd, params, dt, current_time
+local broadcast_interval = 0.1
+local previous_time = socket.gettime()
+local previous_broadcast = socket.gettime()
 
 -- TODO add dt
 print "Beginning server loop."
 while true do
-  currenttime = socket.gettime()
-  dt = currenttime - previoustime
-  data, msg_or_ip, port_or_nil = udp:receivefrom()
+  current_time = socket.gettime()
+  dt = current_time - previous_time
+  data, msg_or_ip, port_or_nil = udp:receive()
+  print(data, msg_or_ip, port_or_nil)
   -- TODO: check msg_or_ip and port_or_nil
   -- TODO: broadcast update instead of sending it per request
   if data then
@@ -25,7 +27,7 @@ while true do
     ent_id, cmd, params = data:match("^(%S*) (%S*) (.*)")
     ent_id = tonumber(ent_id)
 
-    print(cmd)
+    print("data received...", data)
 
     if cmd == 'move' then
       print("moving", x, y)
@@ -57,7 +59,12 @@ while true do
     error("Unknown network error: "..tostring(msg))
   end
 
-  previoustime = currenttime
+  if current_time - previous_broadcast > broadcast_interval then
+    udp:send('ping')
+    previous_broadcast = current_time
+  end
+
+  previous_time = current_time
   socket.sleep(0.01)
 end
 
