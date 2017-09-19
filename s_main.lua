@@ -1,22 +1,20 @@
-local socket = require "socket"
-local entities  = require("entities.s_entities")
+local socket = require("socket")
+local ents = require("entities.s_ents")
 local Player = require("entities.s_player")
 local udp = socket.udp()
 
 udp:settimeout(0)
 udp:setsockname('*', 12345)
 
--- replaced by entities
+-- replaced by ents
 -- local world = {} -- the empty world-state
 local data, msg_or_ip, port_or_nil
-local entity, cmd, params, dt, currenttime
+local cmd, params, dt, currenttime
 local previoustime = socket.gettime()
-
-local running = true
 
 -- TODO add dt
 print "Beginning server loop."
-while running do
+while true do
   currenttime = socket.gettime()
   dt = currenttime - previoustime
   data, msg_or_ip, port_or_nil = udp:receivefrom()
@@ -38,22 +36,20 @@ while running do
   		-- thankfully conversion is easy in lua.
   		x, y = tonumber(x), tonumber(y)
   		-- and finally we stash it away
-      entities:update(ent_id, x, y, dt)
+      ents:update(ent_id, x, y, dt)
   	elseif cmd == 'spawn' then
       print('spawn')
       local id, new_player
       repeat
         math.randomseed(os.time())
         id = math.random(99999)
-      until id ~= 0 and not entities:get_entity(id)
+      until id ~= 0 and not ents:get_ent(id)
       new_player = Player(50, 50, 32, 32, udp, msg_or_ip, port_or_nil, id)
-      entities:add(id, new_player)
+      ents:add(id, new_player)
       print("send_spawn_info call")
       new_player:send_spawn_info()
   	elseif cmd == 'update' then
-      entities:send_move_info()
-  	elseif cmd == 'quit' then
-  		running = false;
+      ents:send_move_info()
     else
       print("unrecognised command:", cmd)
     end

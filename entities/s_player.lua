@@ -1,16 +1,13 @@
 local Class  = require("libs.hump.class")
-local Entity = require("entities.s_entity")
-vector = require("libs.hump.vector")
+local Ent = require("entities.s_ent")
+local vector = require("libs.hump.vector")
 
 local Player = Class{
-  __includes = Entity -- Player class inherits our Entity class
+  __includes = Ent -- Player class inherits our Ent class
 }
 
-local directions = { up = "up", down = "down", left = "left", right = "right" }
-
-
 function Player:init(x, y, w, h, udp, ip, port, id)
-  Entity.init(self, x, y, w, h, udp, ip, port, id)
+  Ent.init(self, x, y, w, h, udp, ip, port, id)
   self.kb = vector(0, 0)
   self.baseVelocity = 300
 end

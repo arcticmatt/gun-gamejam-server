@@ -1,11 +1,11 @@
 local Class = require("libs.hump.class")
 local json = require("libs.json.json")
 
-local Entity = Class{}
+local Ent = Class{}
 
--- Superclass of all entities
+-- Superclass of all ents
 -- TODO: refactor argument passing
-function Entity:init(x, y, w, h, udp, ip, port, id)
+function Ent:init(x, y, w, h, udp, ip, port, id)
   self.x = x
   self.y = y
   self.w = w
@@ -16,34 +16,34 @@ function Entity:init(x, y, w, h, udp, ip, port, id)
   self.id = id
 end
 
-function Entity:getRect()
+function Ent:getRect()
   return self.x, self.y, self.w, self.h
 end
 
-function Entity:draw()
+function Ent:draw()
   -- Do nothing by default
 end
 
-function Entity:update(x, y, dt)
+function Ent:update(x, y, dt)
   self.x = x
   self.y = y
 end
 
-function Entity:send_spawn_info()
+function Ent:send_spawn_info()
   print("Sending spawn info to ", self.ip, self.port, self.id, self.x, self.y)
   self.udp:sendto(string.format("%d %s %d %d", self.id, 'spawn',
     self.x, self.y), self.ip, self.port)
 end
 
-function Entity:send_move_info()
+function Ent:send_move_info()
   self.udp:sendto(string.format("%d %s %d %d", self.id, 'move',
     self.x, self.y), self.ip, self.port)
 end
 
-function Entity:serialize()
+function Ent:serialize()
   json.encode({x = self.x, y = self.y})
 end
 
 -- TODO: tostring
 
-return Entity
+return Ent
