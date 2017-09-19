@@ -51,7 +51,7 @@ while running do
       print("send_spawn_info call")
       new_player:send_spawn_info()
   	elseif cmd == 'update' then
-      entities:send_at_info()
+      entities:send_move_info()
   	elseif cmd == 'quit' then
   		running = false;
     else
@@ -65,4 +65,4 @@ while running do
   socket.sleep(0.01)
 end
 
-print "Thank you."
+print "Finished server loop."

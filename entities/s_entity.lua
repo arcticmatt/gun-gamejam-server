@@ -1,4 +1,5 @@
 local Class = require("libs.hump.class")
+local json = require("libs.json.json")
 
 local Entity = Class{}
 
@@ -34,9 +35,13 @@ function Entity:send_spawn_info()
     self.x, self.y), self.ip, self.port)
 end
 
-function Entity:send_at_info()
-  self.udp:sendto(string.format("%d %s %d %d", self.id, 'at',
+function Entity:send_move_info()
+  self.udp:sendto(string.format("%d %s %d %d", self.id, 'move',
     self.x, self.y), self.ip, self.port)
+end
+
+function Entity:serialize()
+  json.encode({x = self.x, y = self.y})
 end
 
 -- TODO: tostring

@@ -34,9 +34,9 @@ function entities:update(ent_id, x, y, dt)
   self.entityMap[ent_id]:update(x, y, dt)
 end
 
-function entities:send_at_info()
+function entities:send_move_info()
   for _, e in pairs(self.entityMap) do
-    e:send_at_info()
+    e:send_move_info()
   end
 end
 
