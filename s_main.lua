@@ -6,7 +6,7 @@ local encoder = require("utils.s_encoder")
 local udp = socket.udp()
 
 udp:settimeout(0)
-udp:setsockname('*', 12345)
+udp:setsockname('192.168.0.10', 12345)
 
 local data, ip, port, cmd, params, dt, current_time
 local broadcast_interval = 0.1
@@ -35,21 +35,17 @@ while true do
   -- Get data and client location
   data, ip, port = udp:receivefrom()
   is_connected = data and ip and port
-  print(string.format("data = %s, ip = %s, port = %s", data, ip, port))
 
-  -- TODO: broadcast update instead of sending it per request
   if is_connected then
     -- more of these funky match paterns!
     ent_id, cmd, params = decoder:decode_data(data)
 
     if cmd == 'move' then
-      print('move')
       -- TODO: validation of inputs
   		local x, y = params.x, params.y
   		assert(x and y) -- validation is better, but asserts will serve.
       ents:move(ent_id, x, y, dt)
   	elseif cmd == 'spawn' then
-      print('spawn')
       -- Get unused player id
       local id = get_unused_id()
       local new_player = Player(50, 50, 32, 32, udp, ip, port, id)
@@ -63,7 +59,6 @@ while true do
   end
 
   if current_time - previous_broadcast > broadcast_interval then
-    print('pinging clients...')
     ents:send_move_info()
     previous_broadcast = current_time
   end
