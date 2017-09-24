@@ -1,5 +1,5 @@
 local Class = require("libs.hump.class")
-local json = require("libs.json.json")
+local encoder = require("utils.s_encoder")
 
 local Ent = Class{}
 
@@ -24,26 +24,20 @@ function Ent:draw()
   -- Do nothing by default
 end
 
-function Ent:update(x, y, dt)
+function Ent:move(x, y, dt)
+  print(string.format('Moving ent to x = %d, y = %d', x, y))
   self.x = x
   self.y = y
 end
 
 function Ent:send_spawn_info()
-  print("Sending spawn info to ", self.ip, self.port, self.id, self.x, self.y)
-  self.udp:sendto(string.format("%d %s %d %d", self.id, 'spawn',
-    self.x, self.y), self.ip, self.port)
+  print(string.format("Sending spawn info to ip=%s, port=%s", self.ip, self.port))
+  self.udp:sendto(encoder:encode_spawn(self), self.ip, self.port)
 end
 
 function Ent:send_move_info()
-  self.udp:sendto(string.format("%d %s %d %d", self.id, 'move',
-    self.x, self.y), self.ip, self.port)
+  print(string.format("Sending move info to ip=%s, port=%s", self.ip, self.port))
+  self.udp:sendto(encoder:encode_move(self), self.ip, self.port)
 end
-
-function Ent:serialize()
-  json.encode({x = self.x, y = self.y})
-end
-
--- TODO: tostring
 
 return Ent

@@ -12,7 +12,7 @@ function Player:init(x, y, w, h, udp, ip, port, id)
   self.baseVelocity = 300
 end
 
-function Player:update(x, y, dt)
+function Player:move(x, y, dt)
   self.kb = vector(x, y)
   self.kb = self.kb * self.baseVelocity * dt
   self.kb:trimInplace(self.baseVelocity * dt)
