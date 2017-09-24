@@ -21,8 +21,25 @@ end
 
 -- input: an ent
 -- output: ent's move info
-function encoder:encode_move(ent)
-  return encode_position(ent, "move")
+function encoder:encode_at(ent)
+  return encode_position(ent, "at")
+end
+
+-- input: an ent
+-- output: serialized ent
+function encoder:encode_ent(ent)
+  -- Only encode relevant fields
+  return json.encode({
+    ent_id = ent.id,
+    cmd = "new_ent",
+    params = {
+      x = ent.x,
+      y = ent.y,
+      w = ent.w,
+      h = ent.h,
+      id = ent.id,
+    },
+  })
 end
 
 -- ===== Helper functions =====
